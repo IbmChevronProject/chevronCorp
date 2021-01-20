@@ -1,3 +1,3 @@
 
-[![Build Status](https://dev.azure.com/ibmChevron/TestProject1/_apis/build/status/sweetysinha.chevronCorp?branchName=main)](https://dev.azure.com/ibmChevron/TestProject1/_build/latest?definitionId=1&branchName=main)
+[![Build status](https://dev.azure.com/ibmChevron/TestProject1/_apis/build/status/TestProject1-ASP.NET-CI)](https://dev.azure.com/ibmChevron/TestProject1/_build/latest?definitionId=-1)
 # chevronCorp
