@@ -2,7 +2,7 @@ trigger:
   - main
 
   pool:
-    vmImage: 'Ubuntu-16.04'
+  vmImage: "vs2017-win2016"
 
   steps:
   - task: Maven@3
@@ -15,3 +15,4 @@ trigger:
       publishJUnitResults: false
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       goals: 'package'
+
