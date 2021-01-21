@@ -22,8 +22,7 @@ jobs:
 
       - name: Publish functions
         run: dotnet publish --configuration Release --output ${{ env.OUTPUT_PATH }}
-        working-directory: ./AzFunction.AzureFunction
-
+        working-directory: ./AzFunction
       - name: Package functions
         uses: actions/upload-artifact@v1
         with:
@@ -34,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     env:
-      FUNC_APP_NAME: TestFunction1
+      FUNC_APP_NAME: function-app-uc1
     steps:
       - name: Download website
         uses: actions/download-artifact@v1
