@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: azure/login@v1
         with:
-         creds: ${{ secrets.AZURE_CREDENTIALS }}
+         creds: ${{ secrets.CHEVRON_CORP }}
       - name: Download website
         uses: actions/download-artifact@v1
         with:
