@@ -9,14 +9,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Company.Function
 {
-    public static class checkRecordForLogin
+    public static class addInterviewDetails
     {
-        [FunctionName("checkRecordForLogin")]
+        [FunctionName("addInterviewDetails")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            string sqlResult;
             string responseMessage = "This HTTP triggered function executed successfully";
             string connectionString = "Server=tcp:uc1.database.windows.net,1433;Initial Catalog=RoasterDb;Persist Security Info=False;User ID=adminuser;Password=Admin@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
             // Using the connection string to open a connection
@@ -27,12 +26,17 @@ namespace Company.Function
                     // Opening a connection
                     connection.Open();
 
-                    // Defining the login form details
-                    var userName = req.Query["userName"];
-                    var password = req.Query["password"];
+                    // Defining the  form details
+                    var InterviewName = req.Query["InterviewName"];
+                    var FromDate = req.Query["FromDate"];
+                    var ToDate = req.Query["ToDate"];
+					var ServiceLineId = req.Query["ServiceLineId"];
+                    var SkillId = req.Query["SkillId"];
+                    var Description = req.Query["Description"];
 
                     // Prepare the SQL Query
-                    var query = $"SELECT [RoleId] FROM [UserDetails] WHERE [UserName] = '{userName}' AND [Pass] = '{password}'";
+                    var query = $"INSERT INTO [InterviewDetails] ([InterviewName],[FromDate],[ToDate],[ServiceLineId],[SkillId],[Description]) VALUES('{InterviewName}', '{FromDate}', '{ToDate}','{ServiceLineId}', '{SkillId}', '{Description}')";
+
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
 
@@ -42,9 +46,7 @@ namespace Company.Function
                         command.Connection.Close();
                     }
                     command.Connection.Open();
-                    int result = (int)(command.ExecuteScalar());
-                    sqlResult = String.Format("{0}", result);
-                    return new OkObjectResult(sqlResult);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception e)
