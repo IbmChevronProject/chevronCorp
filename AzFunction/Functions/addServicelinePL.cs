@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+
 
 namespace Company.Function
 {
-    public static class checkEmail
+    public static class addServicelinePL
     {
-        [FunctionName("checkEmail")]
+        [FunctionName("addServicelinePL")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
@@ -28,11 +28,14 @@ namespace Company.Function
                     // Opening a connection
                     connection.Open();
 
-                    // Define the username to check if it is existing already
-                    var userName = req.Query["userName"];
+                    // Defining the  form details
+                    var InterviewId = req.Query["InterviewId"];
+                    var SkillId = req.Query["SkillId"];
+                    var PanelListIds = req.Query["PanelListIds"];
+					var Description = req.Query["Description"];
 
                     // Prepare the SQL Query
-                    var query = $"SELECT [UserName] FROM [UserDetails] WHERE [UserName] = '{userName}'";
+                    var query = $"INSERT INTO ServiceLine_PL (InterviewId,SkillId,PanelListIds,Description) VALUES('{InterviewId}', '{SkillId}', '{PanelListIds}', '{Description}')";
 
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
@@ -43,11 +46,7 @@ namespace Company.Function
                         command.Connection.Close();
                     }
                     command.Connection.Open();
-                    object result = command.ExecuteScalar();
-                    if (result != null)
-                        return new OkObjectResult(true);
-                    else
-                        return new OkObjectResult(false);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception e)

@@ -5,21 +5,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Microsoft.Data.SqlClient;
 
 namespace Company.Function
 {
-    public static class checkEmail
+    public static class getInterviewDetailsForPL
     {
-        [FunctionName("checkEmail")]
+        [FunctionName("getInterviewDetailsForPL")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
+            List<string> sqlResult = new List<string>();
             string responseMessage = "This HTTP triggered function executed successfully";
             string connectionString = "Server=tcp:uc1.database.windows.net,1433;Initial Catalog=RoasterDb;Persist Security Info=False;User ID=adminuser;Password=Admin@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+
             // Using the connection string to open a connection
             try
             {
@@ -28,12 +31,11 @@ namespace Company.Function
                     // Opening a connection
                     connection.Open();
 
-                    // Define the username to check if it is existing already
-                    var userName = req.Query["userName"];
+                    // Defining Parameters
+                    var InterviewId = req.Query["InterviewId"];
 
                     // Prepare the SQL Query
-                    var query = $"SELECT [UserName] FROM [UserDetails] WHERE [UserName] = '{userName}'";
-
+                    var query = $"select InterviewId,InterviewName,FORMAT (FromDate, 'dd/MM/yyyy ') as FromDate ,FORMAT (ToDate, 'dd/MM/yyyy ') as ToDate,a.SkillId,SkillName from InterviewDetails a inner join Skills b on a.SkillId=b.SkillId where Fromdate >getdate() and a.InterviewId ='{InterviewId}'";
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
 
@@ -43,11 +45,13 @@ namespace Company.Function
                         command.Connection.Close();
                     }
                     command.Connection.Open();
-                    object result = command.ExecuteScalar();
-                    if (result != null)
-                        return new OkObjectResult(true);
-                    else
-                        return new OkObjectResult(false);
+                    SqlDataReader reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Console.WriteLine(String.Format("{0},{1},{2},{3},{4},{5}", reader[0],reader[1],reader[2],reader[3],reader[4],reader[5]));
+                        sqlResult.Add(String.Format("{0},{1},{2},{3},{4},{5}", reader[0],reader[1],reader[2],reader[3],reader[4],reader[5]));
+                    }
+                    return new OkObjectResult(sqlResult);
                 }
             }
             catch (Exception e)

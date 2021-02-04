@@ -5,15 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Logging;
+
 
 namespace Company.Function
 {
-    public static class checkEmail
+    public static class addPanelListAvailable
     {
-        [FunctionName("checkEmail")]
+        [FunctionName("addPanelListAvailable")]
         public static async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
@@ -28,11 +28,19 @@ namespace Company.Function
                     // Opening a connection
                     connection.Open();
 
-                    // Define the username to check if it is existing already
-                    var userName = req.Query["userName"];
+                    // Defining the  form details
+                    var InterviewId = req.Query["InterviewId"];                    
+                    var PanelListId = req.Query["PanelListId"];
+					var Availability = req.Query["Availability"];
+                    var Slot_A = req.Query["Slot_A"];                    
+                    var Slot_B = req.Query["Slot_B"];
+					var Slot_C = req.Query["Slot_C"];
+                    var Slot_D = req.Query["Slot_D"];
+					var Remarks = req.Query["Remarks"];
+
 
                     // Prepare the SQL Query
-                    var query = $"SELECT [UserName] FROM [UserDetails] WHERE [UserName] = '{userName}'";
+                    var query = $"INSERT INTO PanelList_Availability (PanelListId,InterviewId,Availability,Slot_A,Slot_B,Slot_C,Slot_D,Remarks) VALUES('{PanelListId}', '{InterviewId}', '{Availability}', '{Slot_A}','{Slot_B}', '{Slot_C}', '{Slot_D}', '{Remarks}')";
 
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
@@ -43,11 +51,7 @@ namespace Company.Function
                         command.Connection.Close();
                     }
                     command.Connection.Open();
-                    object result = command.ExecuteScalar();
-                    if (result != null)
-                        return new OkObjectResult(true);
-                    else
-                        return new OkObjectResult(false);
+                    command.ExecuteNonQuery();
                 }
             }
             catch (Exception e)

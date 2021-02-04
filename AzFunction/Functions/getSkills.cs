@@ -35,7 +35,7 @@ namespace Company.Function
                     var serviceLineId = req.Query["serviceLineId"];
 
                     // Prepare the SQL Query
-                    var query = $"SELECT [SkillName] FROM [Skills] a INNER JOIN [ServiceLine] b on a.ServiceLineId = b.ServiceLineId and a.ServiceLineId='{serviceLineId}'";
+                    var query = $"SELECT [SkillId],[SkillName] FROM [Skills] a INNER JOIN [ServiceLine] b on a.ServiceLineId = b.ServiceLineId and a.ServiceLineId='{serviceLineId}'";
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
 
@@ -48,8 +48,8 @@ namespace Company.Function
                     SqlDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Console.WriteLine(String.Format("{0}", reader[0]));
-                        sqlResult.Add(String.Format("{0}", reader[0]));
+                        Console.WriteLine(String.Format("{0},{1}", reader[0], reader[1]));
+                        sqlResult.Add(String.Format("{0},{1}", reader[0], reader[1]));
                     }
                     return new OkObjectResult(sqlResult);
                 }

@@ -27,12 +27,15 @@ namespace Company.Function
                     connection.Open();
 
                     // Defining the registration form details
+                    var firstName = req.Query["firstName"];
+                    var lastName = req.Query["lastName"];
                     var userName = req.Query["userName"];
                     var password = req.Query["password"];
                     var roleId = req.Query["roleId"];
+                    var serviceLineId = req.Query["serviceLineId"];
 
                     // Prepare the SQL Query
-                    var query = $"INSERT INTO [UserDetails] ([UserName],[Pass],[RoleId]) VALUES('{userName}', '{password}', '{roleId}')";
+                    var query = $"INSERT INTO [UserDetails] ([UserName],[Pass],[RoleId],[ServiceLineId],[FirstName],[LastName]) VALUES('{userName}', '{password}', '{roleId}', '{serviceLineId}','{firstName}','{lastName}')";
 
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
