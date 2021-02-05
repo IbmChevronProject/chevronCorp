@@ -35,7 +35,7 @@ namespace Company.Function
                     var InterviewId = req.Query["InterviewId"];
 
                     // Prepare the SQL Query
-                    var query = $"select InterviewId,InterviewName,FORMAT (FromDate, 'dd/MM/yyyy ') as FromDate ,FORMAT (ToDate, 'dd/MM/yyyy ') as ToDate,a.SkillId,SkillName from InterviewDetails a inner join Skills b on a.SkillId=b.SkillId where Fromdate >getdate() and a.InterviewId ='{InterviewId}'";
+                    var query = $"select InterviewId,InterviewName,FORMAT (InterviewDate, 'dd/MM/yyyy ') as InterviewDate ,a.SkillId,SkillName from InterviewDetails a inner join Skills b on a.SkillId=b.SkillId where InterviewDate >getdate() and a.InterviewId ='{InterviewId}'";
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
 
@@ -48,8 +48,8 @@ namespace Company.Function
                     SqlDataReader reader = command.ExecuteReader();
                     while (reader.Read())
                     {
-                        Console.WriteLine(String.Format("{0},{1},{2},{3},{4},{5}", reader[0],reader[1],reader[2],reader[3],reader[4],reader[5]));
-                        sqlResult.Add(String.Format("{0},{1},{2},{3},{4},{5}", reader[0],reader[1],reader[2],reader[3],reader[4],reader[5]));
+                        Console.WriteLine(String.Format("{0},{1},{2},{3},{4}", reader[0],reader[1],reader[2],reader[3],reader[4]));
+                        sqlResult.Add(String.Format("{0},{1},{2},{3},{4}", reader[0],reader[1],reader[2],reader[3],reader[4]));
                     }
                     return new OkObjectResult(sqlResult);
                 }
