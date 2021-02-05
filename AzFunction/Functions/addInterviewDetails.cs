@@ -28,7 +28,7 @@ namespace Company.Function
 
                     // Defining the  form details
                     var InterviewName = req.Query["InterviewName"];
-                    var FromDate = req.Query["InterviewDate"];
+                    var InterviewDate = req.Query["InterviewDate"];
 			var ServiceLineId = req.Query["ServiceLineId"];
                     var SkillId = req.Query["SkillId"];
                     var Description = req.Query["Description"];
