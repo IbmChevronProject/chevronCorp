@@ -11,7 +11,7 @@ It is web app for the Talent Acquisition team to   intimate the panel list  abou
 - Azure Logic Apps
 - Azure Functions
 
-## Detailed Workflow
+## Application Workflow
 -	The application has three main roles( Talent Acquisition, Service Line and Panel list)
 -	Based on the roles, the users will be pointed to their corresponding form to fill details.
 -	Talent Acquisition team will fill the Interview details and intimate the panel List based on the skills.
