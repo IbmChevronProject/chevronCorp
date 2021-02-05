@@ -28,14 +28,13 @@ namespace Company.Function
 
                     // Defining the  form details
                     var InterviewName = req.Query["InterviewName"];
-                    var FromDate = req.Query["FromDate"];
-                    var ToDate = req.Query["ToDate"];
-					var ServiceLineId = req.Query["ServiceLineId"];
+                    var FromDate = req.Query["InterviewDate"];
+			var ServiceLineId = req.Query["ServiceLineId"];
                     var SkillId = req.Query["SkillId"];
                     var Description = req.Query["Description"];
 
                     // Prepare the SQL Query
-                    var query = $"INSERT INTO [InterviewDetails] ([InterviewName],[FromDate],[ToDate],[ServiceLineId],[SkillId],[Description]) VALUES('{InterviewName}', '{FromDate}', '{ToDate}','{ServiceLineId}', '{SkillId}', '{Description}')";
+                    var query = $"INSERT INTO [InterviewDetails] ([InterviewName],[InterviewDate],[ServiceLineId],[SkillId],[Description]) VALUES('{InterviewName}', '{InterviewDate}','{ServiceLineId}', '{SkillId}', '{Description}')";
 
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
