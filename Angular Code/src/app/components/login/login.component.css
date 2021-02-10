@@ -1,0 +1,13 @@
+.row {
+  height: 100vh;
+}
+
+.login-button {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.error-message {
+  color: red;
+  font-size: 12px;
+}

@@ -1,0 +1,23 @@
+<div class="container-fluid bg-light py-3">
+  <div class="row">
+    <div class="col-md-6 mx-auto">
+      <div class="card card-body">
+        <h3 class="text-center mb-4">Reset your Password</h3>
+        <form class="was-validated" #askEmail="ngForm">
+          <fieldset>
+            <div *ngIf="errorMessage != null" class="alert alert-danger" role="alert"> {{ errorMessage }}</div>
+            <div class="form-group">
+              <p>Enter your email address and we will send you a link to reset your password.</p>
+              <input class="form-control input-lg" (change)="change($event)" [(ngModel)]="email"
+                placeholder="Email Address" name="email" type="email" email="true" required />
+            </div>
+            <div class="askemail-button">
+              <input class="btn btn-lg btn-primary" value="Submit" type="submit"
+                [disabled]="!askEmail.valid || checkEmailFlag == false" (click)="connectToLogicApp()" />
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
