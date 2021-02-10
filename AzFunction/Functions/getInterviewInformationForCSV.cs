@@ -35,7 +35,7 @@ namespace Company.Function
                     var serviceLineId = req.Query["serviceLineId"];
 
                     // Prepare the SQL Query
-                    var query = $"SELECT InterviewName, InterviewDate, Description from [InterviewDetails]";
+                    var query = $"select InterviewName,InterviewDate,Firstname +' ' +LastName as PanelListName,UserName,Slot_A,Slot_B,Slot_C,Slot_D from [dbo].[InterviewDetails] a inner join PanelList_Availability b  on a.InterviewId=b.InterviewId left outer join Userdetails c on b.panellistId=c.userid  and Availability='true' where InterviewDate between '02/09/2021' and '03/14/2021'";
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
 
