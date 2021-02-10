@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using System.Collections;
+using System.Collections.Generic;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -9,6 +9,7 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace Company.Function
 {
@@ -19,8 +20,6 @@ namespace Company.Function
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
             ILogger log)
         {
-            ArrayList sqlResult = new ArrayList();
-            string jsonResult = null;
             string responseMessage = "This HTTP triggered function executed successfully";
             string connectionString = "Server=tcp:uc1.database.windows.net,1433;Initial Catalog=RoasterDb;Persist Security Info=False;User ID=adminuser;Password=Admin@123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
 
@@ -36,7 +35,7 @@ namespace Company.Function
                     var serviceLineId = req.Query["serviceLineId"];
 
                     // Prepare the SQL Query
-                    var query = $"SELECT InterviewName, InterviewDate, Description from [InterviewDetails] FOR JSON AUTO";
+                    var query = $"SELECT InterviewName, InterviewDate, Description from [InterviewDetails]";
                     // Prepare the SQL command and execute query
                     SqlCommand command = new SqlCommand(query, connection);
 
@@ -47,18 +46,20 @@ namespace Company.Function
                     }
                     command.Connection.Open();
                     SqlDataReader reader = command.ExecuteReader();
-                    while (reader.Read())
+                    var results = new List<Dictionary<string, object>>();
+                    var cols = new List<string>();
+                    for (var i = 0; i < reader.FieldCount; i++)
                     {
-                        Object[] rows = new Object[reader.FieldCount];
-
-                        // Get the Row with all its column values..
-                        reader.GetValues(rows);
-
-                        // Add this Row to ArrayList.
-                        sqlResult.Add(rows);
-
-                        jsonResult = JsonSerializer.Serialize(sqlResult);
+                        var colName = reader.GetName(i);
+                        var camelCaseName = Char.ToLowerInvariant(colName[0]) + colName.Substring(1);
+                        cols.Add(camelCaseName);
                     }
+
+                    while (reader.Read())
+                        results.Add(SerializeRow(cols, reader));
+
+                    string jsonResult = JsonConvert.SerializeObject(results, Formatting.Indented);
+                    jsonResult = jsonResult.Replace(@"\", "");
                     return new OkObjectResult(jsonResult);
                 }
             }
@@ -67,6 +68,14 @@ namespace Company.Function
                 log.LogError(e.ToString());
             }
             return new OkObjectResult(responseMessage);
+        }
+
+        private static Dictionary<string, object> SerializeRow(IEnumerable<string> cols, SqlDataReader reader)
+        {
+            var result = new Dictionary<string, object>();
+            foreach (var col in cols)
+                result.Add(col, reader[col]);
+            return result;
         }
     }
 }
